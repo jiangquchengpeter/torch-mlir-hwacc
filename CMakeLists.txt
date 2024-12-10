@@ -258,3 +258,14 @@ add_subdirectory(projects)
 if(MLIR_ENABLE_BINDINGS_PYTHON)
   add_subdirectory(python)
 endif()
+
+
+#-------------------------------------------------------------------------------
+# gemm-hwacc-backend
+#-------------------------------------------------------------------------------
+
+option(ENABLE_HWACC_LIB "Enable gemm-hwacc-backend Lib call" ON)
+if (ENABLE_HWACC_LIB)
+  add_subdirectory(externals/gemm-hwacc-backend)
+endif()
+

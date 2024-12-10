@@ -18,6 +18,43 @@ Several vendors have adopted MLIR as the middle layer in their systems, enabling
 
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 
+
+## BUILD CMD
+```bash
+cmake -GNinja -Bbuild \
+  externals/llvm-project/llvm \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DLLVM_ENABLE_ASSERTIONS=ON \
+  -DPython3_FIND_VIRTUALENV=ONLY \
+  -DLLVM_ENABLE_PROJECTS=mlir \
+  -DLLVM_EXTERNAL_PROJECTS="torch-mlir" \
+  -DLLVM_EXTERNAL_TORCH_MLIR_SOURCE_DIR="$PWD" \
+  -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
+  -DLLVM_TARGETS_TO_BUILD=host \
+  `# use clang`\
+  -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
+  `# use ccache to cache build results` \
+  -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+  `# use LLD to link in seconds, rather than minutes` \
+  `# if using clang <= 13, replace --ld-path=ld.lld with -fuse-ld=lld` \
+  -DCMAKE_EXE_LINKER_FLAGS_INIT="--ld-path=ld.lld" \
+  -DCMAKE_MODULE_LINKER_FLAGS_INIT="--ld-path=ld.lld" \
+  -DCMAKE_SHARED_LINKER_FLAGS_INIT="--ld-path=ld.lld" \
+  `# Enabling libtorch binary cache instead of downloading the latest libtorch everytime.` \
+  `# Testing against a mismatched version of libtorch may cause failures` \
+  -DLIBTORCH_CACHE=ON \
+  `# Enable an experimental path to build libtorch (and PyTorch wheels) from source,` \
+  `# instead of downloading them` \
+  -DLIBTORCH_SRC_BUILD=ON \
+  `# Set the variant of libtorch to build / link against. (shared|static and optionally cxxabi11)` \
+  -DLIBTORCH_VARIANT=shared \
+  -DTORCH_MLIR_ENABLE_PYTORCH_EXTENSIONS=ON \
+  -DTORCH_MLIR_ENABLE_JIT_IR_IMPORTER=ON \
+;
+```
+
+
+
 ## All the roads from PyTorch to Torch MLIR Dialect
 
 We have few paths to lower down to the Torch MLIR Dialect.

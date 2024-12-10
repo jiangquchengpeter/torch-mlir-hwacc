@@ -1,0 +1,18 @@
+#/usr/bin/env bash
+
+__THIS_PRJ_PATH__=$(dirname "$(realpath "$0")")
+
+# source $__THIS_PRJ_PATH__/mlir_venv/bin/activate
+conda activate st_compiler_mlir_hwacc
+
+export __PREV_PYTHONPATH=$PYTHONPATH
+
+export PYTHONPATH=$__THIS_PRJ_PATH__/build/python_packages/torch_mlir:$PYTHONPATH
+export PYTHONPATH=$__THIS_PRJ_PATH__/build/tools/torch-mlir/python_packages/torch_mlir:$PYTHONPATH
+export PYTHONPATH=$__THIS_PRJ_PATH__/projects/pt1/examples:$PYTHONPATH
+export PYTHONPATH=$__THIS_PRJ_PATH__/projects/pt1/python:$PYTHONPATH
+export TORCH_MLIR_PREFIX=$__THIS_PRJ_PATH__/build/bin
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$__THIS_PRJ_PATH__/build/lib
+
+echo "Use 'conda deactivate' to exit this venv"
+echo "\n"
